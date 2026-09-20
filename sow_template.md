@@ -1,9 +1,9 @@
 # CS 457 Project Statement of Work (SOW) & Protocol Specification Template
 
-**Student Name:** [Your Full Name]  
-**Date:** [YYYY-MM-DD]  
+**Student Name:** Hans Thedinga  
+**Date:** [2026-09-20]  
 **Course:** CS 457 - Computer Networks  
-**Target Server Domain:** `server.[yourlastname].edu`  
+**Target Server Domain:** server.thedinga.edu  
 
 ---
 
@@ -17,14 +17,14 @@
 > - You are encouraged to use python, but I'm not going to make it a strict requirement. The instructor and TA's ability to help with C or Rust, etc will be diminished in other languages.
 
 ### 1.1 Game Overview
-- **Chosen Game:** [e.g., Terminal Trivia, Tic-Tac-Toe, Connect Four, Battleship]
+- **Chosen Game:** Hangman
 - **Player Capacity:** 2 Players (Simulated via 2 CML Client nodes)
-- **Game Summary:** [Briefly describe the gameplay mechanics and rules]
+- **Game Summary:** Players will attempt to guess a word chosen by the game.
 
 ### 1.2 Core Game Rules & Win/Draw Conditions
-- **Turn Mechanics:** [Explain how turn order is enforced between Player 1 and Player 2]
-- **Victory Condition:** [Define how a player wins the game]
-- **Draw/Tie Condition:** [Define how a draw/tie is detected and handled]
+- **Turn Mechanics:** One player will be randomly selected to start the game. Players may guess a letter and/or guess the word. If a letter is correctly guessed, that letter will be filled in on the word. If a letter is incorrectly guessed, both players will have one less total letter guess. If the word is incorrectly guessed, no penalty will be applied. Players will alternate turns until a win or loss condition is met.
+- **Victory Condition:** A player wins the game by guessing the correct word.
+- **Draw/Tie Condition:** There will be no draws/ties in this game. Both players can, however, lose if no one guesses the word within the allowed number of guesses.
 
 ---
 
