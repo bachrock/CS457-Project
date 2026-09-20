@@ -216,3 +216,22 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Developer Environment / IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Packet Captures / Lab Artifacts
+*.pcap
+*.pcapng
