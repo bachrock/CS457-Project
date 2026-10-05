@@ -223,3 +223,32 @@ What the server does:
 - **In the lobby (waiting for opponent):** remove the player and keep waiting. No `GAME_OVER`.
 - **During the game:** the remaining player wins by forfeit. The server sends `GAME_OVER` with `result: "FORFEIT"` and closes both sockets. This applies even if it was not the leaving player's turn.
 - **After the game is over:** ignore it and close the socket.
+
+## Connection Termination & Socket Lifecycle
+
+**Graceful:** the client sends `DISCONNECT`, then calls `sock.close()`. The OS sends a TCP FIN. The server handles the message, then sees EOF.
+
+**Abrupt:** the process is killed or the network drops. No `DISCONNECT` is sent. The server sees EOF (FIN) or an exception (RST/timeout).
+
+**EOF rule:** `recv()` returning `b""` means the peer closed its write side. It does not raise an exception. The receive loop must `break` on it. Without this, the loop spins at 100% CPU.
+
+```python
+data = sock.recv(1024)
+if not data:                      # EOF, peer closed
+    handle_client_disconnect(player_id)
+    sock.close()
+    break
+```
+
+**Exceptions** that route to the same disconnect handler:
+`ConnectionResetError` (RST), `BrokenPipeError` (send to a closed peer), `ConnectionAbortedError`, `TimeoutError` (peer silent for 60 s on its turn).
+
+Detected disconnects use the forfeit rules above. The server also catches exceptions while sending `GAME_OVER`, so one dead socket never crashes the process.
+
+## Additional Rules
+- If the buffer exceeds 1024 bytes without a `\n`, the server sends `ERROR` `MALFORMED_MESSAGE` and clears the buffer.
+- `timestamp` is Unix epoch time in whole seconds.
+- `player_id` on every client message must match the alias registered for that socket. Otherwise: `ERROR` `MALFORMED_MESSAGE`.
+- An invalid alias format returns `MALFORMED_MESSAGE`; a taken alias returns `DUPLICATE_ALIAS`. Both close the connection.
+- A `WORD` guess must have length equal to the sender's `word_length`, otherwise `INVALID_GUESS`.
+
